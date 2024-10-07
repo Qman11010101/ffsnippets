@@ -1,0 +1,92 @@
+@font-face {
+    font-family: "Noto Sans";
+    src: url("../fonts/NotoSans-VariableFont_wdth\,wght.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Noto Sans Mono";
+    src: url("../fonts/NotoSansMono-VariableFont_wdth\,wght.ttf") format("truetype");
+}
+
+:root {
+    --standard-padding: 10px;
+    --standard-margin: 5px;
+    --expand-margin: calc(var(--standard-margin) * 2);
+}
+
+body {
+    font-family: "Noto Sans", sans-serif;
+    background-color: rgb(38, 29, 59);
+    color: #eee;
+    user-select: none;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+#app {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+#list-view-wrapper {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .search {
+        display: block;
+        background-color: #eee;
+        color: #222;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px;
+        width: calc(100% - calc(var(--standard-padding) * 2));
+
+        &::placeholder {
+            color: #888;
+        }
+    }
+
+    .list-view {
+        width: 100%;
+        max-height: 100%;
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+        gap: var(--expand-margin);
+        padding: 0 var(--standard-padding) var(--standard-padding);
+
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        .list-item {
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: var(--standard-padding);
+            cursor: pointer;
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: rgb(67, 51, 104);
+                transition: background-color 0.2s;
+            }
+        }
+    }
+}
+
+#detail-view-wrapper {
+    width: 500px;
+    height: 100%;
+    border-left: 2px solid #ccc;
+}
