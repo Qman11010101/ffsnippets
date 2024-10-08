@@ -25,3 +25,8 @@ func (a *App) startup(ctx context.Context) {
 func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
+
+func (a *App) StandardOutput(text string) string {
+	fmt.Println(text)
+	return "ok"
+}

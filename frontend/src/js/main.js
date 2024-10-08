@@ -1,6 +1,7 @@
-import van from "./van-1.5.2.min.js";
+import van from "./van-1.5.2.min.js"
+import { StandardOutput } from "../wailsjs/go/main/App"
 
-const { p, div, input, span } = van.tags;
+const { div, input, span } = van.tags
 
 const searchInput = () => {
     return div(
@@ -141,7 +142,12 @@ const listView = () => {
     )
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    await StandardOutput("Ready!").then(
+        (result) => {
+            console.log(result)
+        }
+    )
     van.add(
         document.body, div(
             { id: "app" },
