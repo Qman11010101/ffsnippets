@@ -1,6 +1,6 @@
 import van from "./van-1.5.2.min.js";
 
-const { p, div, input } = van.tags;
+const { p, div, input, span } = van.tags;
 
 const searchInput = () => {
     return div(
@@ -20,11 +20,33 @@ const listView = () => {
         { class: "list-view" },
         div(
             { class: "list-item" },
-            "list 1"
+            div(
+                { class: "item-title"},
+                span("動画を圧縮する(crf)"),
+            ),
+            div(
+                { class: "item-description" },
+                span("crf引数を指定して動画を圧縮します。"),
+            ),
+            div(
+                { class: "item-command"},
+                span("ffmpeg -i {input} -crf {quality} {output}"),
+            )
         ),
         div(
             { class: "list-item" },
-            "list 2"
+            div(
+                { class: "item-title"},
+                span("gifを作成する"),
+            ),
+            div(
+                { class: "item-description" },
+                span("動画からgifを作成します。"),
+            ),
+            div(
+                { class: "item-command"},
+                span('ffmpeg -i {INPUT} -filter_complex "[0:v] fps={FPS},scale={WIDTH}:{HEIGHT=-1},split [a][b];[a] palettegen [p];[b][p] paletteuse" {OUTPUT}')
+            )
         ),
         div(
             { class: "list-item" },
