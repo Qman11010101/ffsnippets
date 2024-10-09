@@ -2,7 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -21,12 +22,7 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
-}
-
-func (a *App) StandardOutput(text string) string {
-	fmt.Println(text)
-	return "ok"
+func (a *App) LoadTextFile() string {
+	path, _ := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{})
+	return path
 }
