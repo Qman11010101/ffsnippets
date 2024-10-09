@@ -2,8 +2,7 @@ package main
 
 import (
 	"context"
-
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"os"
 )
 
 // App struct
@@ -22,7 +21,15 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-func (a *App) LoadTextFile() string {
-	path, _ := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{})
-	return path
+func (a *App) LoadCommandsDataString() string {
+	pwd, err := os.Getwd()
+	if err != nil {
+		return ""
+	}
+	// Load the commands data json
+	bytes, err := os.ReadFile(pwd + "/commands.json")
+	if err != nil {
+		return ""
+	}
+	return string(bytes)
 }

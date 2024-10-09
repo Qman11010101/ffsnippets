@@ -21,10 +21,13 @@
     --header-height: 50px;
     --header-available-height: calc(var(--header-height) - 2px);
     --detail-view-width: max(400px, 50%);
+
+    --var-font-default: "Noto Sans", sans-serif;
+    --var-font-mono: "Noto Sans Mono", monospace;
 }
 
 body {
-    font-family: "Noto Sans", sans-serif;
+    font-family: var(--var-font-default);
     background-color: var(--standard-background-color);
     color: var(--standard-text-color);
     user-select: none;
@@ -49,14 +52,14 @@ header {
         width: var(--header-available-height);
         height: var(--header-available-height);
         padding: calc(calc(var(--header-available-height) - 32px) / 2);
-        
+
         img {
             display: block;
             transform: rotate(0deg);
             transition-duration: .2s;
         }
 
-        &:hover > img {
+        &:hover>img {
             transform: rotate(90deg);
             transition-duration: .2s;
         }
@@ -131,7 +134,7 @@ button:hover {
             }
 
             .item-command {
-                font-family: "Noto Sans Mono", monospace;
+                font-family: var(--var-font-mono);
                 font-size: 0.9rem;
                 color: #ccc;
                 background-color: #333;
@@ -155,11 +158,43 @@ button:hover {
     padding: var(--standard-padding);
 
     .detail-command-title {
-        font-size: 1.5rem;
+        font-size: 1.7rem;
         font-weight: bold;
     }
 
     .detail-command-description {
         line-height: 2;
+    }
+
+    .detail-command-variables-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-top: var(--standard-margin);
+    }
+
+    .variable-item {
+        display: flex;
+        margin-top: var(--standard-margin);
+
+        .variable-name {
+            font-family: var(--var-font-mono);
+            width: 20%;
+            display: flex;
+            align-items: center;
+        }
+
+        .variable-input {
+            display: block;
+            /* background-color: #eee; */
+            padding: var(--standard-padding);
+            border: 2px solid var(--standard-border-color);
+            border-radius: 10px;
+            margin: var(--standard-margin);
+            width: 80%;
+
+            &::placeholder {
+                color: #888;
+            }
+        }
     }
 }

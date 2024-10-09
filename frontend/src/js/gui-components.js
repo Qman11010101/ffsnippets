@@ -1,8 +1,8 @@
 "use strict"
 
-import van from "./van-1.5.2.min.js"
-import { commandsData } from "./load-commands-data.js"
-import { LoadTextFile } from "../../wailsjs/go/main/App.js"
+import van from "./van-1.5.2.debug.js"
+import { loadCommandsData } from "./load-commands.js"
+import { detailView } from "./detail-view-component.js"
 
 const { header, button, div, input, span, img } = van.tags
 
@@ -19,28 +19,10 @@ const searchInput = () => {
     )
 }
 
-const detailView = (dataIdx) => {
-    const data = commandsData[dataIdx]
-
-    // console.log(idx)
-    console.log(data)
-
-    return div(
-        div(
-            { class: "detail-command-title" },
-            span(data.title)
-        ),
-        div(
-            { class: "detail-command-description" },
-            span(data.description)
-        ),
-    )
-}
-
-const listView = (data) => {
+const listView = async (data) => {
     return div(
         { class: "list-view" },
-        ...data.map((item, idx) => {
+        ...(await data).map((item, idx) => {
             return div(
                 {
                     class: "list-item",
@@ -48,7 +30,7 @@ const listView = (data) => {
                     onclick: () => {
                         const detailViewWrapper = document.getElementById("detail-view-wrapper")
                         while (detailViewWrapper.firstChild) detailViewWrapper.removeChild(detailViewWrapper.firstChild)
-                        detailViewWrapper.appendChild(detailView(idx))
+                        detailViewWrapper.appendChild(detailView(data, idx))
                     }
                 },
                 div(
@@ -69,7 +51,6 @@ const listView = (data) => {
 }
 
 export const initialView = () => {
-    const currentCommandIdx = van.state(0)
     van.add(
         document.body, ...[
             header(
@@ -86,24 +67,24 @@ export const initialView = () => {
                         }
                     ),
                 ),
-                button({
-                    onclick: () => {
-                        LoadTextFile().then((res) => {
-                            console.log(res)
-                        })
-                    }
-                }, "LOADING")
+                // button({
+                //     onclick: () => {
+                //         LoadTextFile().then((res) => {
+                //             console.log(res)
+                //         })
+                //     }
+                // }, "LOADING")
             ),
             div(
                 { id: "app" },
                 div(
                     { id: "list-view-wrapper" },
                     searchInput(),
-                    listView(commandsData)
+                    listView(loadCommandsData())
                 ),
                 div(
                     { id: "detail-view-wrapper" },
-                    detailView(0)
+                    detailView(loadCommandsData(), 0)
                 )
             ),
         ]
