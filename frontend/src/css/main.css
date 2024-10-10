@@ -15,8 +15,10 @@
     --expand-margin: calc(var(--standard-margin) * 2);
 
     --standard-background-color: rgb(38, 29, 59);
+    --standard-hovered-background-color: rgb(67, 51, 104);
     --standard-text-color: #eee;
     --standard-border-color: #ccc;
+    --command-background-color: #333;
 
     --header-height: 50px;
     --header-available-height: calc(var(--header-height) - 2px);
@@ -31,6 +33,7 @@ body {
     background-color: var(--standard-background-color);
     color: var(--standard-text-color);
     user-select: none;
+    box-sizing: border-box;
 
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -137,7 +140,7 @@ button:hover {
                 font-family: var(--var-font-mono);
                 font-size: 0.9rem;
                 color: #ccc;
-                background-color: #333;
+                background-color: var(--command-background-color);
                 border-radius: 8px;
                 width: 100%;
                 padding: var(--standard-padding);
@@ -166,7 +169,7 @@ button:hover {
         line-height: 2;
     }
 
-    .detail-command-variables-title {
+    .detail-command-h3 {
         font-size: 1.3rem;
         font-weight: bold;
         margin-top: var(--standard-margin);
@@ -183,18 +186,50 @@ button:hover {
             align-items: center;
         }
 
-        .variable-input {
-            display: block;
-            /* background-color: #eee; */
-            padding: var(--standard-padding);
-            border: 2px solid var(--standard-border-color);
-            border-radius: 10px;
-            margin: var(--standard-margin);
+        .variable-input-wrapper {
             width: 80%;
+            flex-shrink: 0;
+            display: flex;
 
-            &::placeholder {
-                color: #888;
+            input {
+                flex-grow: 1;
+                display: block;
+                padding: var(--standard-padding);
+                margin: var(--standard-margin);
+                border: 2px solid var(--standard-border-color);
+                border-radius: 10px;
+
+                &::placeholder {
+                    color: #888;
+                }
+            }
+
+            .custom-file-input-reference {
+                display: block;
+                padding: var(--standard-padding);
+                margin: var(--standard-margin);
+                border: 2px solid var(--standard-border-color);
+                border-radius: 10px;
+                transition-duration: .2s;
+
+                &:hover {
+                    background-color: var(--standard-hovered-background-color);
+                    transition-duration: .2s;
+                }
             }
         }
+
+        
+    }
+
+    .detail-command-result {
+        user-select: text;
+        margin-top: var(--standard-margin);
+        font-family: var(--var-font-mono);
+        font-size: 1rem;
+        color: #ccc;
+        background-color: var(--command-background-color);
+        border-radius: 8px;
+        padding: var(--standard-padding);
     }
 }

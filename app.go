@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"os"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -32,4 +34,12 @@ func (a *App) LoadCommandsDataString() string {
 		return ""
 	}
 	return string(bytes)
+}
+
+func (a *App) GetFilePath() string {
+	filepath, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{})
+	if err != nil {
+		return ""
+	}
+	return filepath
 }
