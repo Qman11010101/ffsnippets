@@ -15,6 +15,11 @@ EventsOn("command-output-err", (output) => {
     outputElm.scrollTop = outputElm.scrollHeight
 })
 
+EventsOn("command-exit-code", (code) => {
+    const errorCodeElm = document.getElementById("error-code")
+    errorCodeElm.innerText = code
+})
+
 const replaceCommandVariablesWithData = (command, data, isInitialize) => {
     let finalCommand = command
     Object.keys(data.variables).forEach((v) => {
@@ -49,7 +54,7 @@ const VariableInput = (dataSingle, variable) => {
                     type: "text",
                     placeholder: dataSingle.variables[variable].placeholder,
                     value: dataSingle.variables[variable].default,
-                    oninput: (e) => {
+                    oninput: () => {
                         const finalCommandElm = document.getElementById("command-result")
                         finalCommandElm.innerText = replaceCommandVariablesWithData(dataSingle.command, dataSingle, false)
                     }
@@ -170,9 +175,9 @@ export const detailView = (cdt, dataIdx) => {
                             }
 
                             const command = replaceCommandVariablesWithData(originCommandString, data, false)
-                            document.getElementById("detail-command-output").innerText = "";
+                            document.getElementById("detail-command-output").innerText = ""
+                            document.getElementById("error-code").innerText = ""
 
-                            // Execute command
                             ExecuteCommand(command)
                         }
                     },
@@ -189,10 +194,13 @@ export const detailView = (cdt, dataIdx) => {
                 "Output"
             ),
             div(
-                {
-                    id: "detail-command-output"
-                }
+                { id: "detail-command-output" }
             ),
+            div(
+                { class: "error-code-wrap" },
+                span("Error Code: "),
+                span({ id: "error-code" })
+            )
         )
     )
 }

@@ -2,42 +2,13 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"context"
 	"os"
 	"os/exec"
+	"syscall"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
-
-func CustomScan(data []byte, atEOF bool) (advance int, token []byte, err error) {
-	if atEOF && len(data) == 0 {
-		return 0, nil, nil
-	}
-	var i int
-	if i = bytes.IndexByte(data, '\n'); i >= 0 {
-		// We have a full newline-terminated line.
-		return i + 1, dropCR(data[0:i]), nil
-	}
-	if i = bytes.IndexByte(data, '\r'); i >= 0 {
-		// ここを追加した。（CR があったら、そこまでのデータを返そう）
-		return i + 1, data[0:i], nil
-	}
-	// If we're at EOF, we have a final, non-terminated line. Return it.
-	if atEOF {
-		return len(data), dropCR(data), nil
-	}
-	// Request more data.
-	return 0, nil, nil
-}
-
-// dropCR drops a terminal \r from the data.
-func dropCR(data []byte) []byte {
-	if len(data) > 0 && data[len(data)-1] == '\r' {
-		return data[0 : len(data)-1]
-	}
-	return data
-}
 
 // App struct
 type App struct {
@@ -104,5 +75,22 @@ func (a *App) ExecuteCommand(command string) {
 		}
 	}()
 
-	cmd.Wait()
+	err := cmd.Wait()
+
+	if err != nil {
+		// コマンドがエラーで終了した場合
+		if exitError, ok := err.(*exec.ExitError); ok {
+			// 終了コードを取得
+			if status, ok := exitError.Sys().(syscall.WaitStatus); ok {
+				exitCode := status.ExitStatus()
+				runtime.EventsEmit(a.ctx, "command-exit-code", exitCode)
+			}
+		} else {
+			// その他のエラー
+			runtime.EventsEmit(a.ctx, "command-exit-code", 2)
+		}
+	} else {
+		// 正常終了の場合
+		runtime.EventsEmit(a.ctx, "command-exit-code", 0)
+	}
 }
