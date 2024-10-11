@@ -1,10 +1,19 @@
 import van from "./van-1.5.2.debug.js"
-import { GetFilePath } from "../../wailsjs/go/main/App.js"
+import { GetFilePath, ExecuteCommand } from "../../wailsjs/go/main/App.js"
+import { EventsOn } from "../../wailsjs/runtime"
 
-const { div, h2, h3, span, section, input, img, button } = van.tags
+const { div, h2, h3, span, section, input, img, button, p } = van.tags
 
 let commandVariables
 let currentCommand
+
+EventsOn("command-output-err", (output) => {
+    const outputElm = document.getElementById("detail-command-output")
+    outputElm.appendChild(p({ class: "output-err" }, output))
+
+    // auto scroll to bottom
+    outputElm.scrollTop = outputElm.scrollHeight
+})
 
 const replaceCommandVariablesWithData = (command, data, isInitialize) => {
     let finalCommand = command
@@ -136,7 +145,54 @@ export const detailView = (cdt, dataIdx) => {
                     id: "command-result"
                 },
                 commandString
+            ),
+            div(
+                { class: "detail-command-buttons-wrapper" },
+                button(
+                    {
+                        class: "detail-command-button",
+                        onclick: () => {
+
+                        }
+                    },
+                    "Copy"
+                ),
+                button(
+                    {
+                        class: "detail-command-button",
+                        onclick: async () => {
+                            // check if the command has empty variable (placeholder "{***}" remaining)
+                            for (let i = 0; i < commandVariables.length; i++) {
+                                if (document.getElementById(commandVariables[i]).value === "") {
+                                    alert("Please fill all the variables")
+                                    return
+                                }
+                            }
+
+                            const command = replaceCommandVariablesWithData(originCommandString, data, false)
+                            document.getElementById("detail-command-output").innerText = "";
+
+                            // Execute command
+                            ExecuteCommand(command)
+                        }
+                    },
+                    "Execute"
+                ),
             )
+        ),
+        section(
+            {
+                class: "detail-command-output-wrapper",
+            },
+            h3(
+                { class: "detail-command-h3" },
+                "Output"
+            ),
+            div(
+                {
+                    id: "detail-command-output"
+                }
+            ),
         )
     )
 }

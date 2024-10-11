@@ -4,3 +4,5 @@ frontend/dist
 
 #user
 commands.json
+input.*
+output.*
