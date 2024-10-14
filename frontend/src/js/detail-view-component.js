@@ -5,14 +5,23 @@ import { EventsOn } from "../../wailsjs/runtime"
 const { div, h2, h3, span, section, input, img, button, p } = van.tags
 
 let commandVariables
-let currentCommand
+// let currentCommand
 
 EventsOn("command-output-err", (output) => {
     const outputElm = document.getElementById("detail-command-output")
-    outputElm.appendChild(p({ class: "output-err" }, output))
-
-    // auto scroll to bottom
-    outputElm.scrollTop = outputElm.scrollHeight
+    const isProgress = output.startsWith("frame")
+    if (isProgress) {
+        const lastChild = outputElm.lastChild
+        if (lastChild && lastChild.innerText.startsWith("frame")) {
+            lastChild.innerText = output
+        } else {
+            outputElm.appendChild(p({ class: "output-err" }, output))
+            outputElm.scrollTop = outputElm.scrollHeight
+        }
+    } else {
+        outputElm.appendChild(p({ class: "output-err" }, output))
+        outputElm.scrollTop = outputElm.scrollHeight
+    }
 })
 
 EventsOn("command-exit-code", (code) => {
@@ -57,6 +66,16 @@ const VariableInput = (dataSingle, variable) => {
                     oninput: () => {
                         const finalCommandElm = document.getElementById("command-result")
                         finalCommandElm.innerText = replaceCommandVariablesWithData(dataSingle.command, dataSingle, false)
+
+                        const variableInput = document.getElementById(variable)
+                        if (variable === "output") {
+                            const inputVariableInput = document.getElementById("input")
+                            if (inputVariableInput.value === variableInput.value) {
+                                variableInput.style.color = "red"
+                            } else {
+                                variableInput.style.color = "#eee"
+                            }
+                        }
                     }
                 }
             ),
@@ -68,11 +87,13 @@ const VariableInput = (dataSingle, variable) => {
                         const variableInput = document.getElementById(variable)
                         variableInput.value = path
                         variableInput.scrollLeft = variableInput.scrollWidth
+                        variableInput.dispatchEvent(new Event("input"))
 
                         if (variable === "input") {
                             const outputVariableInput = document.getElementById("output")
                             outputVariableInput.value = path
                             outputVariableInput.scrollLeft = outputVariableInput.scrollWidth
+                            outputVariableInput.dispatchEvent(new Event("input"))
                         }
                     }
                 },
@@ -185,6 +206,15 @@ export const detailView = (cdt, dataIdx) => {
                 ),
             )
         ),
+        // section(
+        //     {
+        //         class: "detail-command-progress-wrapper",
+        //     },
+        //     h3(
+        //         { class: "detail-command-h3" },
+        //         "Progress"
+        //     ),
+        // ),
         section(
             {
                 class: "detail-command-output-wrapper",
